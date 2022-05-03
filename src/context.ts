@@ -1,7 +1,7 @@
 import { Module } from "@/module";
 import { Optional } from "@/types/optional.type";
 import { Component } from '@/types/component.type';
-import md5 from 'md5';
+import _ from 'lodash';
 
 export type Context = {
     getModuleForComponent(component: Component): Optional<string>;
@@ -18,8 +18,7 @@ type ContextOptions = {
 }
 
 const createComponentName = (component: Component): string => {
-    const str = JSON.stringify(component);
-    return md5(str);
+    return _.get(component, "displayName") ?? _.get(component, "name");
 };
 
 export const createContext = (options?: ContextOptions): Context => {
