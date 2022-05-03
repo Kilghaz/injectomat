@@ -1,0 +1,44 @@
+{
+  "name": "dinja",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kilghaz/dinja.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kilghaz/dinja/issues"
+  },
+  "homepage": "https://github.com/Kilghaz/dinja#readme",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.182",
+    "@types/md5": "^2.3.2",
+    "@types/node": "^17.0.31",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.5.1",
+    "prettier": "^2.6.2",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "md5": "^2.3.0",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^8.3.2"
+  }
+}
