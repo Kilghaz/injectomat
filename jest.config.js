@@ -1,6 +1,7 @@
 module.exports = {
+  preset: "ts-jest",
   testFailureExitCode: 0,
-  moduleFileExtensions: ["js", "json", "ts"],
+  moduleFileExtensions: ["js", "json", "ts", "tsx"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/tests/$1",
@@ -18,6 +19,6 @@ module.exports = {
   },
   coverageReporters: ["cobertura", "text-summary"],
   transform: {
-    "^.+\\.ts$": "ts-jest",
+    "^.+\\.tsx?$": "ts-jest"
   },
 };

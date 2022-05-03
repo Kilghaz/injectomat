@@ -1,4 +1,4 @@
-import { createModule, Module } from '@/module';
+import { createModule, Module } from '../src/module';
 import { Token } from '../src/types/token';
 import { createInjectionContainer, InjectionContainer } from '../src/injection-container';
 import { service } from '../src/decorators/service.decorator';

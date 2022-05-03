@@ -1,1 +1,1 @@
-export type Component = never;
+export type Component = never | unknown;
