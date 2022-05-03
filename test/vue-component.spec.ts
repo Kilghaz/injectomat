@@ -26,12 +26,11 @@ describe("Vue Component", () => {
     });
 
     it("should register components", () => {
-        const module = context.getModuleForComponent(TestComponent);
+        const module = context.getModuleIdForComponentId("test-component");
         expect(module).toBeDefined();
     });
 
     it("should throw an error for unregistered component", () => {
-        const SomeComponent = defineComponent({ name: "some-component" });
-        expect(() => context.getModuleForComponent(SomeComponent)).toThrow();
+        expect(() => context.getModuleIdForComponentId("some-component")).toThrow();
     });
 });

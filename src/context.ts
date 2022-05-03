@@ -4,7 +4,7 @@ import { Component } from '@/types/component.type';
 import _ from 'lodash';
 
 export type Context = {
-    getModuleForComponent(component: Component): Optional<string>;
+    getModuleIdForComponentId(componentId: string): Optional<string>;
     register(module: Module): void;
     distance(from: string, to: string): number;
 };
@@ -17,7 +17,7 @@ type ContextOptions = {
     componentIdFactory?: (component: Component) => string,
 }
 
-const createComponentName = (component: Component): string => {
+const defaultComponentIdFactory = (component: Component): string => {
     return _.get(component, "displayName") ?? _.get(component, "name");
 };
 
@@ -26,7 +26,7 @@ export const createContext = (options?: ContextOptions): Context => {
     const components = new Map<ComponentName, ModuleId>();
     const links = new Map<ChildId, ParentId>();
 
-    const componentIdFactory = options?.componentIdFactory ?? createComponentName;
+    const componentIdFactory = options?.componentIdFactory ?? defaultComponentIdFactory;
 
     const register = (module: Module) => {
         modules.set(module.getId(), module);
@@ -82,19 +82,18 @@ export const createContext = (options?: ContextOptions): Context => {
         return toAncestors.indexOf(match) + fromAncestors.indexOf(match);
     };
 
-    const getModuleForComponent = (component: Component): Optional<string> => {
-        const name = componentIdFactory(component);
-        const moduleId = components.get(name);
+    const getModuleIdForComponentId = (componentId: string): Optional<string> => {
+        const moduleId = components.get(componentId);
 
         if (!moduleId) {
-            throw new Error(`Encountered unregistered component ${component}.`);
+            throw new Error(`Encountered unregistered component ${componentId}.`);
         }
 
         return moduleId;
     };
 
     return {
-        getModuleForComponent,
+        getModuleIdForComponentId,
         register,
         distance,
     };

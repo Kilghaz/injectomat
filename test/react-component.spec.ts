@@ -27,12 +27,11 @@ describe("React Component", () => {
     });
 
     it("should register components", () => {
-        const module = context.getModuleForComponent(TestComponent);
+        const module = context.getModuleIdForComponentId("TestComponent");
         expect(module).toBeDefined();
     });
 
     it("should throw an error for unregistered component", () => {
-        const SomeComponent = () => React.createElement("div");
-        expect(() => context.getModuleForComponent(SomeComponent)).toThrow();
+        expect(() => context.getModuleIdForComponentId("SomeComponent")).toThrow();
     });
 });
