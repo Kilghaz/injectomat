@@ -16,28 +16,33 @@ export const createInjectionContainer = (
     providerContainer: ProviderContainer = createProviderContainer(createInstanceManager()),
     context: Context = globalModuleContext,
 ): InjectionContainer => {
-
     const dependencyResolver = createDependencyResolver(
         providerContainer,
         context
     );
 
-    const container: InjectionContainer = {
-        provide<T>(provider: Provider<T>): void {
-            if (isLiteralClassProvider(provider)) {
-                const classProvider = toClassProvider(provider);
-                providerContainer.provide(classProvider.token, [classProvider]);
-                return;
-            }
-
-            providerContainer.provide(provider.token, [provider]);
-        },
-        resolve<T>(token: Token<T>): T {
-            return dependencyResolver.resolve(token);
-        },
-        resolveAll<T>(token: Token<T>): T[] {
-            return dependencyResolver.resolveAll(token);
+    const provide = <T>(provider: Provider<T>): void => {
+        if (isLiteralClassProvider(provider)) {
+            const classProvider = toClassProvider(provider);
+            providerContainer.provide(classProvider.token, [classProvider]);
+            return;
         }
+
+        providerContainer.provide(provider.token, [provider]);
+    };
+
+    const resolve = <T>(token: Token<T>): T => {
+        return dependencyResolver.resolve(token);
+    };
+
+    const resolveAll = <T>(token: Token<T>): T[] => {
+        return dependencyResolver.resolveAll(token);
+    };
+
+    const container: InjectionContainer = {
+        provide,
+        resolve,
+        resolveAll
     };
 
     container.provide({ token: InjectionContainerToken, useValue: container });
