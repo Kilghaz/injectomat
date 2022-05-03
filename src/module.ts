@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 import { Context, globalModuleContext } from "@/context";
 import { ModuleIdMetaKey } from "@/tokens";
 import { Component } from '@/types/component.type';
-import { toStringToken } from '@/types/string-token.type';
 
 export type ModuleOptions = {
     components?: Component[];
@@ -39,21 +38,7 @@ export const createModule = (options: ModuleOptions): Module => {
 
         const importedProviders = imports.flatMap((it) => resolveProviders(it));
 
-        return [...providers, ...importedProviders]
-            .map((it) => {
-                if (isLiteralClassProvider(it)) {
-                    return toClassProvider(it);
-                }
-
-                return it;
-            })
-            .map((it) => {
-                const token = toStringToken(it.token);
-                return {
-                    ...it,
-                    token,
-                };
-            });
+        return [...providers, ...importedProviders];
     };
 
     const provideAll = (container: InjectionContainer) => {

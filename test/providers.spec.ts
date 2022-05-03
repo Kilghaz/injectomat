@@ -2,6 +2,7 @@ import { createInjectionContainer, InjectionContainer } from '../src/injection-c
 import { Token } from '../src/types/token';
 import { service } from '../src/decorators/service.decorator';
 import { inject } from '../src/decorators/inject.decorator';
+import { injectAll } from '../src/decorators/inject-all.decorator';
 
 describe("Providers", () => {
     let container: InjectionContainer;
@@ -24,6 +25,18 @@ describe("Providers", () => {
         }
     }
 
+    @service()
+    class ThirdTestClass {
+        constructor(public testClass: TestClass) {
+        }
+    }
+
+    @service()
+    class FourthTestClass {
+        constructor(@injectAll(tokenFixture) public values: string[]) {
+        }
+    }
+
     beforeEach(() => {
         container = createInjectionContainer();
     })
@@ -31,6 +44,11 @@ describe("Providers", () => {
     it("should inject a value", () => {
         container.provide( { token: tokenFixture, useValue: valueFixture });
         expect(container.resolve(tokenFixture)).toEqual(valueFixture);
+    });
+
+    it("should inject all values", () => {
+        container.provide( { token: tokenFixture, useValue: valueFixture });
+        expect(container.resolveAll(tokenFixture)).toEqual([valueFixture]);
     });
 
     it("should inject a value by token", () => {
@@ -67,4 +85,22 @@ describe("Providers", () => {
         expect(resolved).toBeInstanceOf(AnotherTestClass);
         expect(resolved.value).toEqual(valueFixture);
     });
+
+    it("should inject a class and resolve class dependencies", () => {
+        container.provide(ThirdTestClass);
+        container.provide(TestClass);
+        container.provide( { token: secondTokenFixture, useValue: valueFixture });
+        const resolved: ThirdTestClass = container.resolve(ThirdTestClass);
+        expect(resolved).toBeInstanceOf(ThirdTestClass);
+        expect(resolved.testClass).toBeInstanceOf(TestClass);
+    });
+
+    it("should inject an instance of a class and inject all dependencies", () => {
+        container.provide(FourthTestClass);
+        container.provide( { token: tokenFixture, useValue: valueFixture });
+        const resolved: FourthTestClass = container.resolve(FourthTestClass);
+        expect(resolved).toBeInstanceOf(FourthTestClass);
+        expect(resolved.values).toEqual([valueFixture]);
+    });
+
 });

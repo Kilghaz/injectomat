@@ -35,4 +35,23 @@ describe("Module", () => {
         expect(container.resolve(TestClass)).toBeInstanceOf(TestClass);
     });
 
+    it("should import another module", () => {
+        const secondModule = createModule({
+            providers: [
+                { token: tokenFixture, useValue: valueFixture },
+                TestClass,
+            ]
+        });
+
+        module = createModule({
+            root: true,
+            imports: [secondModule],
+        });
+        container = createInjectionContainer();
+        module.provideAll(container);
+
+        expect(container.resolve(tokenFixture)).toEqual(valueFixture);
+        expect(container.resolve(TestClass)).toBeInstanceOf(TestClass);
+    });
+
 });
