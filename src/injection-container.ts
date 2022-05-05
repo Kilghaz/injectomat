@@ -1,10 +1,10 @@
-import { Token } from "@/types/token";
-import { InjectionContainerToken } from "@/tokens";
-import { createProviderContainer, ProviderContainer } from '@/provider-container';
-import { createDependencyResolver } from '@/dependency-resolver';
-import { Context, globalModuleContext } from '@/context';
-import { isLiteralClassProvider, Provider, toClassProvider } from '@/types/provider';
-import { createInstanceManager } from '@/instance-manager';
+import { Token } from "./types/token";
+import { InjectionContainerToken } from "./tokens";
+import { createProviderContainer, ProviderContainer } from './provider-container';
+import { createDependencyResolver } from './dependency-resolver';
+import { Context, globalModuleContext } from './context';
+import { isLiteralClassProvider, Provider, toClassProvider } from './types/provider';
+import { createInstanceManager } from './instance-manager';
 
 export type InjectionContainer = {
     provide<T>(provider: Provider<T>): void;

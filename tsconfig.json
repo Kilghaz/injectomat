@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es2015",
+    "module": "commonjs",
     "strict": true,
     "jsx": "preserve",
     "importHelpers": true,
@@ -11,14 +11,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
     "outDir": "dist",
-    "paths": {
-      "@/*": ["src/*"],
-      "@tests/*": ["tests/*"]
-    },
+    "declaration": true,
     "lib": [
       "esnext",
       "dom",

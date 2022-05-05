@@ -1,8 +1,8 @@
-import { Token } from '@/types/token';
-import { Provider } from '@/types/provider';
-import { Optional } from '@/types/optional.type';
-import { InstanceManager } from '@/instance-manager';
-import { toStringToken } from '@/types/string-token.type';
+import { Token } from './types/token';
+import { Provider } from './types/provider';
+import { Optional } from './types/optional.type';
+import { InstanceManager } from './instance-manager';
+import { toStringToken } from './types/string-token.type';
 
 export type ProviderContainer = InstanceManager & {
     inject<T>(token: Token<T>): Optional<Provider<T>[]>;

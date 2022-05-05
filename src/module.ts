@@ -1,10 +1,10 @@
 import _ from "lodash";
-import { isLiteralClassProvider, Provider, toClassProvider } from "@/types/provider";
-import { InjectionContainer, } from "@/injection-container";
+import { isLiteralClassProvider, Provider, toClassProvider } from "./types/provider";
+import { InjectionContainer, } from "./injection-container";
 import { v4 as uuid } from "uuid";
-import { Context, globalModuleContext } from "@/context";
-import { ModuleIdMetaKey } from "@/tokens";
-import { Component } from '@/types/component.type';
+import { Context, globalModuleContext } from "./context";
+import { ModuleIdMetaKey } from "./tokens";
+import { Component } from './types/component.type';
 
 export type ModuleOptions = {
     components?: Component[];

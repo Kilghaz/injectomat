@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import { isClassToken } from '@/types/class-token.type';
-import { TokenMetadata } from '@/metadata/injection-metadata';
-import { Token } from '@/types/token';
+import { isClassToken } from './class-token.type';
+import { TokenMetadata } from '../metadata/injection-metadata';
+import { Token } from './token';
 
 export type StringToken = string;
 

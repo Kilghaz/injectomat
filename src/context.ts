@@ -1,6 +1,6 @@
-import { Module } from "@/module";
-import { Optional } from "@/types/optional.type";
-import { Component } from '@/types/component.type';
+import { Module } from "./module";
+import { Optional } from "./types/optional.type";
+import { Component } from './types/component.type';
 import _ from 'lodash';
 
 export type Context = {

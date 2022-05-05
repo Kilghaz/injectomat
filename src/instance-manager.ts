@@ -1,4 +1,4 @@
-import { InstanceSetup } from "@/types/instance-setup";
+import { InstanceSetup } from "./types/instance-setup";
 
 export type InstanceManager = {
     setInstance<T>(key: string, value: T): T;

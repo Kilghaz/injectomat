@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Token } from "@/types/token";
+import { Token } from "./token";
 
 type Constructor<T> = { new(...args: never[]): T };
 

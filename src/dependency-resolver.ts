@@ -1,7 +1,7 @@
-import { UnregisteredTokenError } from "@/errors/unregistered-token.error";
-import { getConstructorParametersMetadata } from "@/metadata/constructor-parameters-metadata";
-import { ParameterMetadataMissingError } from "@/errors/parameter-metadata-missing.error";
-import { Token } from "@/types/token";
+import { UnregisteredTokenError } from "./errors/unregistered-token.error";
+import { getConstructorParametersMetadata } from "./metadata/constructor-parameters-metadata";
+import { ParameterMetadataMissingError } from "./errors/parameter-metadata-missing.error";
+import { Token } from "./types/token";
 import {
     ClassProvider,
     FactoryProvider,
@@ -12,15 +12,15 @@ import {
     Provider,
     TokenProvider,
     ValueProvider,
-} from "@/types/provider";
-import { InjectionScope } from "@/types/injection-scope";
-import { ScopeMetadata } from "@/metadata/injection-metadata";
+} from "./types/provider";
+import { InjectionScope } from "./types/injection-scope";
+import { ScopeMetadata } from "./metadata/injection-metadata";
 import _ from "lodash";
-import { Context } from "@/context";
-import { ModuleIdMetaKey } from "@/tokens";
-import { Optional } from "@/types/optional.type";
-import { ProviderContainer } from '@/provider-container';
-import { toStringToken } from '@/types/string-token.type';
+import { Context } from "./context";
+import { ModuleIdMetaKey } from "./tokens";
+import { Optional } from "./types/optional.type";
+import { ProviderContainer } from './provider-container';
+import { toStringToken } from './types/string-token.type';
 
 type Constructor<T> = {
     new(...args: never[]): T;

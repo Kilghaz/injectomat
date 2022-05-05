@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { InjectionScope } from "@/types/injection-scope";
-import { ScopeMetadata, TokenMetadata, TypeMetadata } from "@/metadata/injection-metadata";
-import { InjectionType } from "@/types/injection-type";
+import { InjectionScope } from "../types/injection-scope";
+import { ScopeMetadata, TokenMetadata, TypeMetadata } from "../metadata/injection-metadata";
+import { InjectionType } from "../types/injection-type";
 
 type ServiceOptions = {
     token: string;

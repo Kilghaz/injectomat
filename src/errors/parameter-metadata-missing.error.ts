@@ -1,4 +1,4 @@
-import { ConstructorParameterMetadata } from "@/metadata/constructor-parameters-metadata";
+import { ConstructorParameterMetadata } from "../metadata/constructor-parameters-metadata";
 
 export class ParameterMetadataMissingError extends Error {
     constructor(constructor: { new(): unknown }, index: number, meta: ConstructorParameterMetadata) {

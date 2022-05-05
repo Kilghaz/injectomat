@@ -1,18 +1,27 @@
 {
   "name": "dinja",
   "version": "1.0.0",
-  "description": "",
+  "description": "A dependency injection library.",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postbuild": "node post-build.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kilghaz/dinja.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "dependency",
+    "injection",
+    "di",
+    "ioc"
+  ],
+  "author": {
+    "name": "Philipp Jean-Jacques",
+    "url": "https://github.com/kilghaz"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Kilghaz/dinja/issues"
