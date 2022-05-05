@@ -1,23 +1,17 @@
-export type Metadata<T> = {
-    get(target: unknown): T;
-    set(target: unknown, value?: T): void;
-};
+export class Metadata<T> {
+    constructor(private readonly key: string,
+                private readonly fallback: T) {
+    }
 
-export const createMetadata = <T>(key: string, fallback: T): Metadata<T> => {
-    const set = <K>(target: K, value?: T): void => {
-        Reflect.defineMetadata(key, value ?? fallback, target);
-    };
-
-    const get = <K>(target: K): T => {
+    get<K = unknown>(target: K): T {
         try {
-            return Reflect.getMetadata(key, target) ?? fallback;
+            return Reflect.getMetadata(this.key, target) ?? this.fallback;
         } catch (e) {
-            return fallback;
+            return this.fallback;
         }
-    };
+    }
 
-    return {
-        get,
-        set,
-    };
-};
+    set<K = unknown>(target: K, value?: T): void {
+        Reflect.defineMetadata(this.key, value ?? this.fallback, target);
+    }
+}

@@ -1,51 +1,40 @@
 import { Token } from "./types/token";
-import { InjectionContainerToken } from "./tokens";
-import { createProviderContainer, ProviderContainer } from './provider-container';
-import { createDependencyResolver } from './dependency-resolver';
+import { ProviderContainer } from './provider-container';
+import { DependencyResolver } from './dependency-resolver';
 import { Context, globalModuleContext } from './context';
 import { isLiteralClassProvider, Provider, toClassProvider } from './types/provider';
-import { createInstanceManager } from './instance-manager';
+import { InstanceManager } from './instance-manager';
+import { InjectionContainerToken } from './tokens';
 
-export type InjectionContainer = {
-    provide<T>(provider: Provider<T>): void;
-    resolve<T>(token: Token<T>): T;
-    resolveAll<T>(token: Token<T>): T[];
-};
+export class InjectionContainer {
+    private readonly dependencyResolver: DependencyResolver;
 
-export const createInjectionContainer = (
-    providerContainer: ProviderContainer = createProviderContainer(createInstanceManager()),
-    context: Context = globalModuleContext,
-): InjectionContainer => {
-    const dependencyResolver = createDependencyResolver(
-        providerContainer,
-        context
-    );
+    constructor(private readonly instanceManager: InstanceManager = new InstanceManager(),
+                private readonly providerContainer: ProviderContainer = new ProviderContainer(),
+                private readonly context: Context = globalModuleContext) {
+        this.dependencyResolver = new DependencyResolver(
+            instanceManager,
+            providerContainer,
+            context
+        );
 
-    const provide = <T>(provider: Provider<T>): void => {
+        this.provide({ token: InjectionContainerToken, useValue: this });
+    }
+
+    provide<T>(provider: Provider<T>): void {
         if (isLiteralClassProvider(provider)) {
             const classProvider = toClassProvider(provider);
-            providerContainer.provide(classProvider.token, [classProvider]);
+            this.providerContainer.add(classProvider.token, [classProvider]);
             return;
         }
+        this.providerContainer.add(provider.token, [provider]);
+    }
 
-        providerContainer.provide(provider.token, [provider]);
-    };
+    resolve<T>(token: Token<T>): T {
+        return this.dependencyResolver.resolve(token);
+    }
 
-    const resolve = <T>(token: Token<T>): T => {
-        return dependencyResolver.resolve(token);
-    };
-
-    const resolveAll = <T>(token: Token<T>): T[] => {
-        return dependencyResolver.resolveAll(token);
-    };
-
-    const container: InjectionContainer = {
-        provide,
-        resolve,
-        resolveAll
-    };
-
-    container.provide({ token: InjectionContainerToken, useValue: container });
-
-    return container;
-};
+    resolveAll<T>(token: Token<T>): T[] {
+        return this.dependencyResolver.resolveAll(token);
+    }
+}

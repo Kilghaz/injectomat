@@ -1,8 +1,8 @@
-import { createInjectionContainer, InjectionContainer } from '../src/injection-container';
+import { InjectionContainer } from '../src';
 import { Token } from '../src/types/token';
-import { service } from '../src/decorators/service.decorator';
-import { inject } from '../src/decorators/inject.decorator';
-import { injectAll } from '../src/decorators/inject-all.decorator';
+import { service } from '../src/decorators';
+import { inject } from '../src/decorators';
+import { injectAll } from '../src/decorators';
 
 describe("Providers", () => {
     let container: InjectionContainer;
@@ -38,7 +38,7 @@ describe("Providers", () => {
     }
 
     beforeEach(() => {
-        container = createInjectionContainer();
+        container = new InjectionContainer();
     })
 
     it("should inject a value", () => {

@@ -1,4 +1,4 @@
-import { createInstanceManager, InstanceManager } from '../src/instance-manager';
+import { InstanceManager } from '../src';
 import _ from 'lodash';
 
 describe("Instance Manager", () => {
@@ -12,13 +12,13 @@ describe("Instance Manager", () => {
     const instanceFixture = new TestClass();
 
     it("should decorate instances", () => {
-        instanceManager = createInstanceManager([decoratorMock]);
+        instanceManager = new InstanceManager([decoratorMock]);
         instanceManager.setInstance(keyFixture, instanceFixture);
         expect(decoratorMock).toHaveBeenCalledWith(instanceFixture);
     });
 
     it("should get an instance", () => {
-        instanceManager = createInstanceManager([decoratorMock]);
+        instanceManager = new InstanceManager([decoratorMock]);
         instanceManager.setInstance(keyFixture, instanceFixture);
         expect(instanceManager.getInstance(keyFixture)).toEqual(instanceFixture);
     });

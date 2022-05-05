@@ -21,11 +21,13 @@ import { ModuleIdMetaKey } from "./tokens";
 import { Optional } from "./types/optional.type";
 import { ProviderContainer } from './provider-container';
 import { toStringToken } from './types/string-token.type';
+import { InstanceManager } from './instance-manager';
 
 type Constructor<T> = {
     new(...args: never[]): T;
 };
 
+// TODO: move this to instance manager
 const instanceIdentifier = <T>(token: Token<T>, constructor: Constructor<T>, provider: Provider<T>): string => {
     const scope = ScopeMetadata.get(constructor);
 
@@ -44,10 +46,12 @@ const instanceIdentifier = <T>(token: Token<T>, constructor: Constructor<T>, pro
     return constructor.name;
 };
 
+// TODO: introduce internal type
 const getModuleId = (provider: Provider<unknown>): Optional<string> => {
     return (provider.meta ?? {})[ModuleIdMetaKey];
 };
 
+// TODO: Make this configurable
 const bestProvider = (providers: Provider<unknown>[], context: Context, from?: string): Provider<unknown> => {
     const moduleIds = _.uniq(_.compact(providers.map(getModuleId)));
 
@@ -68,40 +72,37 @@ const bestProvider = (providers: Provider<unknown>[], context: Context, from?: s
     return sortedProviders[0];
 };
 
-export type DependencyResolver = {
-    resolve<T = never>(token: Token<T>): T;
-    resolveAll<T = never>(token: Token<T>): T[];
-}
+export class DependencyResolver {
+    constructor(private readonly instanceManager: InstanceManager,
+                private readonly container: ProviderContainer,
+                private readonly context: Context) {
+    }
 
-export const createDependencyResolver = (
-    container: ProviderContainer,
-    context: Context): DependencyResolver => {
-
-    const resolveFactoryProvider = <T>(
+    private resolveFactoryProvider<T>(
         token: Token<T>,
         provider: FactoryProvider<T>,
-    ): T => {
+    ): T {
         return provider.useFactory(
             <K>(token: Token<K>) => {
-                return resolve<K>(token);
+                return this.resolve<K>(token);
             },
             <K>(token: Token<K>) => {
-                return resolveAll<K>(token);
+                return this.resolveAll<K>(token);
             }
         );
-    };
+    }
 
-    const resolveClassProvider = <T>(
+    private resolveClassProvider<T>(
         token: Token<T>,
         provider: ClassProvider<T>,
         meta: Record<string, string> = {}
-    ): T => {
+    ): T {
         const constructor = provider.useClass;
         const identifier = instanceIdentifier(token, constructor, provider);
         const currentModule = meta[ModuleIdMetaKey];
 
-        if (container.getInstance(identifier)) {
-            return container.getInstance(identifier) as T;
+        if (this.instanceManager.getInstance(identifier)) {
+            return this.instanceManager.getInstance(identifier) as T;
         }
 
         const params = getConstructorParametersMetadata(constructor);
@@ -110,29 +111,29 @@ export const createDependencyResolver = (
                 throw new ParameterMetadataMissingError(constructor, index, it);
             }
             return it.multi
-                ? (resolveAll(it.token) as never)
-                : resolve(it.token, currentModule);
+                ? (this.resolveAll(it.token) as never)
+                : this.resolve(it.token, currentModule);
         });
 
         const instance = new constructor(...resolved);
-        return container.setInstance(identifier, instance);
-    };
+        return this.instanceManager.setInstance(identifier, instance);
+    }
 
-    const resolveTokenProvider = <T>(
+    private resolveTokenProvider<T>(
         token: Token<T>,
         provider: TokenProvider<T>,
-    ): T => {
-        return resolve(toStringToken(provider.useToken));
-    };
+    ): T {
+        return this.resolve(toStringToken(provider.useToken));
+    }
 
-    const resolveValueProvider = <T>(token: Token<T>, provider: ValueProvider<T>): T => {
+    private resolveValueProvider<T>(token: Token<T>, provider: ValueProvider<T>): T {
         return provider.useValue;
-    };
+    }
 
-    const resolveProvider = <T = never>(
+    private resolveProvider<T = never>(
         token: Token<T>,
         provider: Provider<unknown>,
-    ): T => {
+    ): T {
         const stringToken = toStringToken(token);
 
         if (provider === undefined) {
@@ -142,42 +143,36 @@ export const createDependencyResolver = (
         const meta = provider.meta;
 
         if (isFactoryProvider<T>(provider)) {
-            return resolveFactoryProvider(token, provider);
+            return this.resolveFactoryProvider(token, provider);
         }
 
         if (isClassProvider<T>(provider)) {
-            return resolveClassProvider<T>(token, provider, meta);
+            return this.resolveClassProvider<T>(token, provider, meta);
         }
 
         if (isTokenProvider<T>(provider)) {
-            return resolveTokenProvider<T>(token, provider);
+            return this.resolveTokenProvider<T>(token, provider);
         }
 
         if (isValueProvider<T>(provider)) {
-            return resolveValueProvider(token, provider);
+            return this.resolveValueProvider(token, provider);
         }
 
         return provider as never;
-    };
-
-    const resolve = <T = never>(token: Token<T>, from?: string):T => {
-        const stringToken = toStringToken(token);
-        const providers = (container.inject<Provider<T>[]>(stringToken) ?? []).reverse();
-        const provider = bestProvider(providers, context, from);
-
-        return resolveProvider(token, provider);
-    };
-
-    const resolveAll = <T = never>(token: Token<T>): T[] => {
-        const stringToken = toStringToken(token);
-
-        return (container.inject<Provider<T>[]>(stringToken) ?? []).map((provider) =>
-            resolveProvider(token, provider)
-        );
-    };
-
-    return {
-        resolve,
-        resolveAll,
     }
-};
+
+    resolve<T = never>(token: Token<T>, from?: string): T {
+        const stringToken = toStringToken(token);
+        const providers = (this.container.getAll<Provider<T>[]>(stringToken) ?? []).reverse();
+        const provider = bestProvider(providers, this.context, from);
+        return this.resolveProvider(token, provider);
+    }
+
+    resolveAll<T = never>(token: Token<T>): T[] {
+        const stringToken = toStringToken(token);
+
+        return (this.container.getAll<Provider<T>[]>(stringToken) ?? []).map((provider) =>
+            this.resolveProvider(token, provider)
+        );
+    }
+}

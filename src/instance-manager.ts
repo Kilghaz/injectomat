@@ -1,29 +1,21 @@
-import { InstanceSetup } from "./types/instance-setup";
+import { InstanceDecorator } from "./types/instance-decorator";
 
-export type InstanceManager = {
-    setInstance<T>(key: string, value: T): T;
-    getInstance<T = unknown>(key: string): T;
-};
+export class InstanceManager {
+    private readonly instances: Map<string, unknown> = new Map<string, unknown>();
 
-export const createInstanceManager = (decorators: InstanceSetup[] = []): InstanceManager => {
-    const instances: Map<string, unknown> = new Map<string, unknown>();
+    constructor(private readonly decorators: InstanceDecorator[] = []) {
+    }
 
-    const setInstance = <T>(key: string, value: T): T => {
-        for (const decorator of decorators) {
+    setInstance<T>(key: string, value: T): T {
+        for (const decorator of this.decorators) {
             value = decorator(value);
         }
 
-        instances.set(key, value);
+        this.instances.set(key, value);
         return value;
     };
 
-    const getInstance = <T = unknown>(key: string): T => {
-        return instances.get(key) as T;
+    getInstance<T = unknown>(key: string): T {
+        return this.instances.get(key) as T;
     };
-
-    return {
-        getInstance,
-        setInstance,
-    };
-};
-
+}

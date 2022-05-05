@@ -1,7 +1,7 @@
-import { createModule, Module } from '../src/module';
+import { Module } from '../src';
 import { Token } from '../src/types/token';
-import { createInjectionContainer, InjectionContainer } from '../src/injection-container';
-import { service } from '../src/decorators/service.decorator';
+import { InjectionContainer } from '../src';
+import { service } from '../src/decorators';
 
 describe("Module", () => {
     let module: Module;
@@ -16,14 +16,14 @@ describe("Module", () => {
     class TestClass {}
 
     beforeEach(() => {
-        module = createModule({
+        module = new Module({
             root: true,
             providers: [
                 { token: tokenFixture, useValue: valueFixture },
                 TestClass,
             ]
         });
-        container = createInjectionContainer();
+        container = new InjectionContainer();
         module.provideAll(container);
     });
 
@@ -36,18 +36,18 @@ describe("Module", () => {
     });
 
     it("should import another module", () => {
-        const secondModule = createModule({
+        const secondModule = new Module({
             providers: [
                 { token: tokenFixture, useValue: valueFixture },
                 TestClass,
             ]
         });
 
-        module = createModule({
+        module = new Module({
             root: true,
             imports: [secondModule],
         });
-        container = createInjectionContainer();
+        container = new InjectionContainer();
         module.provideAll(container);
 
         expect(container.resolve(tokenFixture)).toEqual(valueFixture);

@@ -1,6 +1,4 @@
-import { createModule, Module } from '../src/module';
-import { createInjectionContainer, InjectionContainer } from '../src/injection-container';
-import { Context, createContext } from '../src/context';
+import { Context, InjectionContainer, Module } from '../src';
 import * as React from 'react';
 import { FC } from 'react';
 
@@ -14,15 +12,15 @@ describe("React Component", () => {
     };
 
     beforeEach(() => {
-        context = createContext();
-        module = createModule({
+        context = new Context();
+        module = new Module({
             root: true,
             context,
             components: [
                 TestComponent,
             ],
         });
-        container = createInjectionContainer();
+        container = new InjectionContainer();
         module.provideAll(container);
     });
 

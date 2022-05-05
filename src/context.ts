@@ -2,76 +2,65 @@ import { Module } from "./module";
 import { Optional } from "./types/optional.type";
 import { Component } from './types/component.type';
 import _ from 'lodash';
-
-export type Context = {
-    getModuleIdForComponentId(componentId: string): Optional<string>;
-    register(module: Module): void;
-    distance(from: string, to: string): number;
-};
+import { ComponentIdFactory } from './types/component-id-factory.type';
 
 type ModuleId = string;
 type ParentId = ModuleId;
 type ChildId = ModuleId;
 type ComponentName = string;
 type ContextOptions = {
-    componentIdFactory?: (component: Component) => string,
+    componentIdFactory?: ComponentIdFactory,
 }
 
-const defaultComponentIdFactory = (component: Component): string => {
+const defaultComponentIdFactory: ComponentIdFactory = (component: Component): string => {
     return _.get(component, "displayName") ?? _.get(component, "name");
 };
 
-export const createContext = (options?: ContextOptions): Context => {
-    const modules = new Map<ModuleId, Module>();
-    const components = new Map<ComponentName, ModuleId>();
-    const links = new Map<ChildId, ParentId>();
+export class Context {
+    private readonly componentIdFactory: ComponentIdFactory;
+    private readonly modules = new Map<ModuleId, Module>();
+    private readonly components = new Map<ComponentName, ModuleId>();
+    private readonly links = new Map<ChildId, ParentId>();
 
-    const componentIdFactory = options?.componentIdFactory ?? defaultComponentIdFactory;
+    constructor(options: ContextOptions = {}) {
+        this.componentIdFactory = options.componentIdFactory ?? defaultComponentIdFactory;
+    }
 
-    const register = (module: Module) => {
-        modules.set(module.getId(), module);
+    getModuleIdForComponentId(componentId: string): Optional<string> {
+        const moduleId = this.components.get(componentId);
+
+        if (!moduleId) {
+            throw new Error(`Encountered unregistered component ${componentId}.`);
+        }
+
+        return moduleId;
+    }
+
+    register(module: Module): void {
+        this.modules.set(module.getId(), module);
 
         module.components?.forEach((it) => {
-            const name = componentIdFactory(it);
+            const name = this.componentIdFactory(it);
 
             if (!name) {
                 return;
             }
 
-            components.set(name, module.getId());
+            this.components.set(name, module.getId());
         });
 
         if (module.root) {
-            linkDependencyTree(module);
+            this.linkDependencyTree(module);
         }
-    };
+    }
 
-    const linkDependencyTree = (current: Module): void => {
-        const imports = current.imports ?? [];
-        imports.forEach((it) => {
-            links.set(it.getId(), current.getId());
-            linkDependencyTree(it);
-        });
-    };
-
-    const ancestors = (from: string, result: string[] = []): string[] => {
-        const parent = links.get(from);
-        const ancestorsList = [...result, from];
-
-        if (!parent) {
-            return ancestorsList;
-        }
-
-        return ancestors(parent, ancestorsList);
-    };
-
-    const distance = (from: string, to: string): number => {
+    distance(from: string, to: string): number {
         if (from === to) {
             return 0;
         }
 
-        const fromAncestors = ancestors(from);
-        const toAncestors = ancestors(to);
+        const fromAncestors = this.ancestors(from);
+        const toAncestors = this.ancestors(to);
 
         const match = fromAncestors.find((it) => toAncestors.includes(it));
 
@@ -80,23 +69,27 @@ export const createContext = (options?: ContextOptions): Context => {
         }
 
         return toAncestors.indexOf(match) + fromAncestors.indexOf(match);
+    }
+
+    private linkDependencyTree(current: Module): void {
+        const imports = current.imports ?? [];
+        imports.forEach((it) => {
+            this.links.set(it.getId(), current.getId());
+            this.linkDependencyTree(it);
+        });
     };
 
-    const getModuleIdForComponentId = (componentId: string): Optional<string> => {
-        const moduleId = components.get(componentId);
+    private ancestors(from: string, result: string[] = []): string[] {
+        const parent = this.links.get(from);
+        const ancestorsList = [...result, from];
 
-        if (!moduleId) {
-            throw new Error(`Encountered unregistered component ${componentId}.`);
+        if (!parent) {
+            return ancestorsList;
         }
 
-        return moduleId;
+        return this.ancestors(parent, ancestorsList);
     };
+}
 
-    return {
-        getModuleIdForComponentId,
-        register,
-        distance,
-    };
-};
-
-export const globalModuleContext = createContext();
+// TODO: Move to root module configuration
+export const globalModuleContext = new Context();

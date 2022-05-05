@@ -5,61 +5,55 @@ import { v4 as uuid } from "uuid";
 import { Context, globalModuleContext } from "./context";
 import { ModuleIdMetaKey } from "./tokens";
 import { Component } from './types/component.type';
+import { ModuleOptions } from './types/module-options.type';
 
-export type ModuleOptions = {
-    components?: Component[];
-    imports?: Module[];
-    providers?: Provider<unknown>[];
-    context?: Context;
-    root?: boolean;
-};
+export class Module {
+    private readonly id = uuid();
 
-export type Module = ModuleOptions & {
-    getId(): string;
-    provideAll(container: InjectionContainer): void;
-};
+    public components: Component[];
+    public imports: Module[];
+    public providers: Provider<unknown>[];
+    public context: Context;
+    public root: boolean;
 
-export const createModule = (options: ModuleOptions): Module => {
-    const id = uuid();
-    const context = options.context ?? globalModuleContext;
+    constructor(options: ModuleOptions) {
+        this.components = options.components ?? [];
+        this.imports = options.imports ?? [];
+        this.providers = options.providers ?? [];
+        this.context = options.context ?? globalModuleContext;
+        this.root = options.root ?? false;
 
-    options.providers = options.providers?.map((it) => {
-        let provider = it;
-        if (isLiteralClassProvider(it)) {
-            provider = toClassProvider(it);
-        }
-        provider.meta = { ...it.meta, [ModuleIdMetaKey]: id };
-        return provider;
-    });
+        this.context.register(this);
 
-    const resolveProviders = (current: ModuleOptions = options): Provider<unknown>[] => {
-        const imports = current.imports ?? [];
-        const providers = current.providers ?? [];
+        options.providers = options.providers?.map((it) => {
+            let provider = it;
+            if (isLiteralClassProvider(it)) {
+                provider = toClassProvider(it);
+            }
+            provider.meta = { ...it.meta, [ModuleIdMetaKey]: this.id };
+            return provider;
+        });
+    }
 
-        const importedProviders = imports.flatMap((it) => resolveProviders(it));
+    getId(): string {
+        return this.id;
+    }
 
-        return [...providers, ...importedProviders];
-    };
-
-    const provideAll = (container: InjectionContainer) => {
-        const providers = _.uniq(resolveProviders());
+    provideAll(container: InjectionContainer): void {
+        const providers = _.uniq(this.resolveProviders());
 
         _.forEach(_.groupBy(providers, "token"), (providers) => {
             providers.forEach((it) => container.provide(it));
         });
+    }
+
+    private resolveProviders(current: Module = this): Provider<unknown>[] {
+        const imports = current.imports ?? [];
+        const providers = current.providers ?? [];
+
+        const importedProviders = imports.flatMap((it) => this.resolveProviders(it));
+
+        return [...providers, ...importedProviders];
     };
 
-    const getId = (): string => {
-        return id;
-    };
-
-    const self: Module = {
-        ...options,
-        getId,
-        provideAll,
-    };
-
-    context.register(self);
-
-    return self;
-};
+}
