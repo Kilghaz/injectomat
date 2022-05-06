@@ -26,7 +26,7 @@ describe("Lazy", () => {
 
     it("should resolve dependencies lazily", async () => {
         const cls = container.resolve(LazyClass);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         expect(cls.lazyDependency).toBeDefined();
         expect(cls.lazyDependencies).toBeDefined();
         expect(cls.lazyDependencies).toHaveLength(1);

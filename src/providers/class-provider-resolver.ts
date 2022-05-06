@@ -8,6 +8,7 @@ import { ParameterMetadataMissingError } from '../errors/parameter-metadata-miss
 import { DependencyResolver } from '../dependency-resolver';
 import { LazyPropertiesMetadata, LifetimeMetadata, PropertiesMetadata } from '../metadata/injection-metadata';
 import { Lifetime } from '../types/lifetime.type';
+import { Constructor } from '../types/constructor.type';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
     constructor(private readonly instanceManager: InstanceManager,
@@ -24,19 +25,10 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
             return this.instanceManager.getInstance(identifier) as T;
         }
 
-        const params = getConstructorParametersMetadata(constructor);
-        const resolved = params.map((it, index) => {
-            if (it.token === undefined) {
-                throw new ParameterMetadataMissingError(constructor, index, it);
-            }
-            return it.multi
-                ? (this.dependencyResolver.resolveAll(it.token) as never)
-                : this.dependencyResolver.resolve(it.token, currentModule);
-        });
-
-        const instance = new constructor(...resolved);
-        this.resolveProperties(instance);
-        this.resolveLazyProperties(instance);
+        const args = this.resolveConstructorArgs(constructor, currentModule);
+        const instance = new constructor(...args);
+        this.resolveProperties(instance, currentModule);
+        this.resolveLazyProperties(instance, currentModule);
 
         if (LifetimeMetadata.get(constructor) === Lifetime.Transient) {
             return instance as T;
@@ -49,19 +41,33 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
         return isClassProvider(provider);
     }
 
-    private resolveProperties(instance: any): void {
-        const props = PropertiesMetadata.get(instance);
-        props.forEach((it) => {
-            instance[it.name] = it.multi ? this.dependencyResolver.resolveAll(it.token) : this.dependencyResolver.resolve(it.token);
+    private resolveConstructorArgs<T = unknown>(constructor: Constructor<T>, from?: string): never[] {
+        const params = getConstructorParametersMetadata(constructor);
+        return params.map((it, index) => {
+            if (it.token === undefined) {
+                throw new ParameterMetadataMissingError(constructor, index, it);
+            }
+            return this.resolve(it.token, it.multi, from);
         });
     }
 
-    private resolveLazyProperties(instance: any): void {
+    private resolveProperties(instance: any, from?: string): void {
+        const props = PropertiesMetadata.get(instance);
+        props.forEach((it) => {
+            instance[it.name] = this.resolve(it.token, it.multi, from);
+        });
+    }
+
+    private resolveLazyProperties(instance: any, from?: string): void {
         const props = LazyPropertiesMetadata.get(instance);
         props.forEach((it) => {
             setTimeout(() => {
-                instance[it.name] = it.multi ? this.dependencyResolver.resolveAll(it.token) : this.dependencyResolver.resolve(it.token);
+                instance[it.name] = this.resolve(it.token, it.multi, from);
             }, 0);
         });
+    }
+
+    private resolve(token: Token, multi: boolean, from?: string): never {
+        return (multi ? this.dependencyResolver.resolveAll(token) : this.dependencyResolver.resolve(token, from)) as never;
     }
 }
