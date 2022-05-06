@@ -1,6 +1,6 @@
 import { InjectionContainer } from '../src';
 import { Token } from '../src/types/token';
-import { service } from '../src/decorators';
+import { injectable } from '../src/decorators';
 import { inject } from '../src/decorators';
 import { injectAll } from '../src/decorators';
 
@@ -13,25 +13,25 @@ describe("Providers", () => {
         hello: { value: "fixture" },
     }
 
-    @service()
+    @injectable()
     class TestClass {
         constructor(@inject(secondTokenFixture) public value: string) {
         }
     }
 
-    @service({ token: tokenFixture })
+    @injectable({ token: tokenFixture })
     class AnotherTestClass {
         constructor(@inject(secondTokenFixture) public value: string) {
         }
     }
 
-    @service()
+    @injectable()
     class ThirdTestClass {
         constructor(public testClass: TestClass) {
         }
     }
 
-    @service()
+    @injectable()
     class FourthTestClass {
         constructor(@injectAll(tokenFixture) public values: string[]) {
         }

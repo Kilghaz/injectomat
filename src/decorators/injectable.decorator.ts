@@ -8,7 +8,7 @@ type ServiceOptions = {
     scope: InjectionScope;
 };
 
-export function service(options: Partial<ServiceOptions> = {}): ClassDecorator {
+export function injectable(options: Partial<ServiceOptions> = {}): ClassDecorator {
     return function (constructor) {
         TypeMetadata.set(constructor, InjectionType.Class);
         TokenMetadata.set(constructor, options.token ?? constructor.name);

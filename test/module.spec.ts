@@ -1,7 +1,7 @@
 import { Module } from '../src';
 import { Token } from '../src/types/token';
 import { InjectionContainer } from '../src';
-import { service } from '../src/decorators';
+import { injectable } from '../src/decorators';
 
 describe("Module", () => {
     let module: Module;
@@ -12,7 +12,7 @@ describe("Module", () => {
         hello: { value: "fixture" },
     }
 
-    @service()
+    @injectable()
     class TestClass {}
 
     beforeEach(() => {

@@ -1,3 +1,3 @@
 export * from "./inject.decorator"
 export * from "./inject-all.decorator"
-export * from "./service.decorator"
+export * from "./injectable.decorator"
