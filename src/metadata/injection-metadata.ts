@@ -1,7 +1,7 @@
 import { Metadata } from "./metadata";
 import { InjectionType } from "../types/injection-type";
 import { InjectionScope } from "../types/injection-scope";
-import { Lifecycle } from '../types/lifetime.type';
+import { Lifecycle } from '../types/lifecycle.type';
 import { Property } from '../types/lazy-property.type';
 
 export const ScopeMetadata = new Metadata<InjectionScope>("di:injection-scope", InjectionScope.Global);

@@ -5,3 +5,5 @@ export * from "./provider-container"
 export * from "./instance-manager";
 export * from "./module";
 export * from "./root-module";
+export * from "./types/lifecycle.type";
+export * from "./types/injection-scope";

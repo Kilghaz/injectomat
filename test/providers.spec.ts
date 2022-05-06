@@ -1,7 +1,7 @@
 import { InjectionContainer } from '../src';
 import { Token } from '../src/types/token';
 import { inject, injectable, injectAll } from '../src/decorators';
-import { Lifecycle } from '../src/types/lifetime.type';
+import { Lifecycle } from '../src';
 
 describe("Providers", () => {
     let container: InjectionContainer;

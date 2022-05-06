@@ -7,7 +7,7 @@ import { getConstructorParametersMetadata } from '../metadata/constructor-parame
 import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing.error';
 import { DependencyResolver } from '../dependency-resolver';
 import { LazyPropertiesMetadata, LifetimeMetadata, PropertiesMetadata } from '../metadata/injection-metadata';
-import { Lifecycle } from '../types/lifetime.type';
+import { Lifecycle } from '../types/lifecycle.type';
 import { Constructor } from '../types/constructor.type';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
