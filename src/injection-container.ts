@@ -37,8 +37,8 @@ export class InjectionContainer {
         this.providerContainer.add(provider.token, [provider]);
     }
 
-    resolve<T>(token: Token<T>): T {
-        return this.dependencyResolver.resolve(token);
+    resolve<T>(token: Token<T>, from?: string): T {
+        return this.dependencyResolver.resolve(token, from);
     }
 
     resolveAll<T>(token: Token<T>): T[] {

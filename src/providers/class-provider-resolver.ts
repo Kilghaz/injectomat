@@ -7,7 +7,7 @@ import { getConstructorParametersMetadata } from '../metadata/constructor-parame
 import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing.error';
 import { DependencyResolver } from '../dependency-resolver';
 import { LazyPropertiesMetadata, LifetimeMetadata, PropertiesMetadata } from '../metadata/injection-metadata';
-import { Lifetime } from '../types/lifetime.type';
+import { Lifecycle } from '../types/lifetime.type';
 import { Constructor } from '../types/constructor.type';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
@@ -30,7 +30,7 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
         this.resolveProperties(instance, currentModule);
         this.resolveLazyProperties(instance, currentModule);
 
-        if (LifetimeMetadata.get(constructor) === Lifetime.Transient) {
+        if (LifetimeMetadata.get(constructor) === Lifecycle.Transient) {
             return instance as T;
         }
 

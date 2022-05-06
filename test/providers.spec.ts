@@ -1,7 +1,7 @@
 import { InjectionContainer } from '../src';
 import { Token } from '../src/types/token';
 import { inject, injectable, injectAll } from '../src/decorators';
-import { Lifetime } from '../src/types/lifetime.type';
+import { Lifecycle } from '../src/types/lifetime.type';
 
 describe("Providers", () => {
     let container: InjectionContainer;
@@ -105,7 +105,7 @@ describe("Providers", () => {
     it("should create multiple instances for transient dependencies", () => {
         const constructor = jest.fn();
 
-        @injectable({ lifetime: Lifetime.Transient })
+        @injectable({ lifetime: Lifecycle.Transient })
         class TransientClass {
             constructor() {
                 constructor();
