@@ -17,14 +17,13 @@ describe("Module", () => {
 
     beforeEach(() => {
         module = new Module({
-            root: true,
             providers: [
                 { token: tokenFixture, useValue: valueFixture },
                 TestClass,
             ]
         });
         container = new InjectionContainer();
-        module.provideAll(container);
+        container.registerRootModule(module);
     });
 
     it("should inject a value", () => {
@@ -44,11 +43,10 @@ describe("Module", () => {
         });
 
         module = new Module({
-            root: true,
             imports: [secondModule],
         });
         container = new InjectionContainer();
-        module.provideAll(container);
+        container.registerRootModule(module);
 
         expect(container.resolve(tokenFixture)).toEqual(valueFixture);
         expect(container.resolve(TestClass)).toBeInstanceOf(TestClass);

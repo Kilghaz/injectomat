@@ -1,4 +1,11 @@
 import { InstanceDecorator } from "./types/instance-decorator";
+import { Token } from './types/token';
+import { Provider } from './types/provider';
+import { ScopeMetadata } from './metadata/injection-metadata';
+import { InjectionScope } from './types/injection-scope';
+import { ModuleIdMetaKey } from './tokens';
+import { Constructor } from './types/constructor.type';
+
 
 export class InstanceManager {
     private readonly instances: Map<string, unknown> = new Map<string, unknown>();
@@ -17,5 +24,23 @@ export class InstanceManager {
 
     getInstance<T = unknown>(key: string): T {
         return this.instances.get(key) as T;
+    };
+
+    static createKey<T>(token: Token<T>, constructor: Constructor<T>, provider: Provider<T>): string {
+        const scope = ScopeMetadata.get(constructor);
+
+        if (scope === InjectionScope.Global) {
+            return constructor.name;
+        }
+
+        if (scope === InjectionScope.Module) {
+            return provider.meta?.[ModuleIdMetaKey] + constructor.name;
+        }
+
+        if (scope === InjectionScope.Token) {
+            return token + constructor.name;
+        }
+
+        return constructor.name;
     };
 }

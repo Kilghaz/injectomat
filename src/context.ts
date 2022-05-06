@@ -21,9 +21,19 @@ export class Context {
     private readonly modules = new Map<ModuleId, Module>();
     private readonly components = new Map<ComponentName, ModuleId>();
     private readonly links = new Map<ChildId, ParentId>();
+    private rootModuleId?: string = undefined;
 
     constructor(options: ContextOptions = {}) {
         this.componentIdFactory = options.componentIdFactory ?? defaultComponentIdFactory;
+    }
+
+    registerRootModule(module: Module) {
+        this.modules.clear();
+        this.components.clear();
+        this.links.clear();
+        this.rootModuleId = module.getId();
+        this.register(module);
+        this.linkDependencyTree(module);
     }
 
     getModuleIdForComponentId(componentId: string): Optional<string> {
@@ -36,7 +46,7 @@ export class Context {
         return moduleId;
     }
 
-    register(module: Module): void {
+    private register(module: Module): void {
         this.modules.set(module.getId(), module);
 
         module.components?.forEach((it) => {
@@ -49,9 +59,9 @@ export class Context {
             this.components.set(name, module.getId());
         });
 
-        if (module.root) {
-            this.linkDependencyTree(module);
-        }
+        module.imports?.forEach((it) => {
+            this.register(it);
+        });
     }
 
     distance(from: string, to: string): number {
@@ -90,6 +100,3 @@ export class Context {
         return this.ancestors(parent, ancestorsList);
     };
 }
-
-// TODO: Move to root module configuration
-export const globalModuleContext = new Context();

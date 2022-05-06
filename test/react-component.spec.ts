@@ -14,14 +14,12 @@ describe("React Component", () => {
     beforeEach(() => {
         context = new Context();
         module = new Module({
-            root: true,
-            context,
             components: [
                 TestComponent,
             ],
         });
-        container = new InjectionContainer();
-        module.provideAll(container);
+        container = new InjectionContainer(undefined, undefined, context);
+        container.registerRootModule(module);
     });
 
     it("should register components", () => {

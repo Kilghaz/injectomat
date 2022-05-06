@@ -13,8 +13,6 @@ import {
     TokenProvider,
     ValueProvider,
 } from "./types/provider";
-import { InjectionScope } from "./types/injection-scope";
-import { ScopeMetadata } from "./metadata/injection-metadata";
 import _ from "lodash";
 import { Context } from "./context";
 import { ModuleIdMetaKey } from "./tokens";
@@ -22,37 +20,13 @@ import { Optional } from "./types/optional.type";
 import { ProviderContainer } from './provider-container';
 import { toStringToken } from './types/string-token.type';
 import { InstanceManager } from './instance-manager';
+import { ProviderSelector } from './types/provider-selector.type';
 
-type Constructor<T> = {
-    new(...args: never[]): T;
-};
-
-// TODO: move this to instance manager
-const instanceIdentifier = <T>(token: Token<T>, constructor: Constructor<T>, provider: Provider<T>): string => {
-    const scope = ScopeMetadata.get(constructor);
-
-    if (scope === InjectionScope.Global) {
-        return constructor.name;
-    }
-
-    if (scope === InjectionScope.Module) {
-        return provider.meta?.[ModuleIdMetaKey] + constructor.name;
-    }
-
-    if (scope === InjectionScope.Token) {
-        return token + constructor.name;
-    }
-
-    return constructor.name;
-};
-
-// TODO: introduce internal type
 const getModuleId = (provider: Provider<unknown>): Optional<string> => {
     return (provider.meta ?? {})[ModuleIdMetaKey];
 };
 
-// TODO: Make this configurable
-const bestProvider = (providers: Provider<unknown>[], context: Context, from?: string): Provider<unknown> => {
+const defaultProviderSelector: ProviderSelector = (providers: Provider<unknown>[], context: Context, from?: string): Provider<unknown> => {
     const moduleIds = _.uniq(_.compact(providers.map(getModuleId)));
 
     if (providers.length === 1 || !from || moduleIds.length === 1) {
@@ -73,9 +47,16 @@ const bestProvider = (providers: Provider<unknown>[], context: Context, from?: s
 };
 
 export class DependencyResolver {
+
+    private providerSelector: ProviderSelector = defaultProviderSelector;
+
     constructor(private readonly instanceManager: InstanceManager,
                 private readonly container: ProviderContainer,
                 private readonly context: Context) {
+    }
+
+    setProviderSelector(selector: ProviderSelector): void {
+        this.providerSelector = selector;
     }
 
     private resolveFactoryProvider<T>(
@@ -98,7 +79,7 @@ export class DependencyResolver {
         meta: Record<string, string> = {}
     ): T {
         const constructor = provider.useClass;
-        const identifier = instanceIdentifier(token, constructor, provider);
+        const identifier = InstanceManager.createKey(token, constructor, provider);
         const currentModule = meta[ModuleIdMetaKey];
 
         if (this.instanceManager.getInstance(identifier)) {
@@ -164,7 +145,7 @@ export class DependencyResolver {
     resolve<T = never>(token: Token<T>, from?: string): T {
         const stringToken = toStringToken(token);
         const providers = (this.container.getAll<Provider<T>[]>(stringToken) ?? []).reverse();
-        const provider = bestProvider(providers, this.context, from);
+        const provider = this.providerSelector(providers, this.context, from);
         return this.resolveProvider(token, provider);
     }
 
