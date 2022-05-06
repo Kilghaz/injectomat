@@ -4,7 +4,6 @@ import _ from 'lodash';
 describe("Instance Manager", () => {
     let instanceManager: InstanceManager;
 
-
     const keyFixture = "test";
     const decoratorMock = jest.fn().mockImplementation(_.identity);
 

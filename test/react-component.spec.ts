@@ -1,10 +1,9 @@
-import { Context, InjectionContainer, Module } from '../src';
+import { Context, InjectionContainer, Module, RootModule } from '../src';
 import * as React from 'react';
 import { FC } from 'react';
 
 describe("React Component", () => {
     let module: Module;
-    let container: InjectionContainer;
     let context: Context;
 
     const TestComponent: FC = () => {
@@ -13,13 +12,11 @@ describe("React Component", () => {
 
     beforeEach(() => {
         context = new Context();
-        module = new Module({
+        module = new RootModule({
             components: [
                 TestComponent,
             ],
-        });
-        container = new InjectionContainer(undefined, undefined, context);
-        container.registerRootModule(module);
+        }, new InjectionContainer(undefined, undefined, context));
     });
 
     it("should register components", () => {
