@@ -6,7 +6,7 @@ import { ModuleIdMetaKey } from '../tokens';
 import { getConstructorParametersMetadata } from '../metadata/constructor-parameters-metadata';
 import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing.error';
 import { DependencyResolver } from '../dependency-resolver';
-import { LifetimeMetadata } from '../metadata/injection-metadata';
+import { LazyPropertiesMetadata, LifetimeMetadata, PropertiesMetadata } from '../metadata/injection-metadata';
 import { Lifetime } from '../types/lifetime.type';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
@@ -35,6 +35,8 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
         });
 
         const instance = new constructor(...resolved);
+        this.resolveProperties(instance);
+        this.resolveLazyProperties(instance);
 
         if (LifetimeMetadata.get(constructor) === Lifetime.Transient) {
             return instance as T;
@@ -45,5 +47,21 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
 
     canResolveProvider(provider: Provider<any>): boolean {
         return isClassProvider(provider);
+    }
+
+    private resolveProperties(instance: any): void {
+        const props = PropertiesMetadata.get(instance);
+        props.forEach((it) => {
+            instance[it.name] = it.multi ? this.dependencyResolver.resolveAll(it.token) : this.dependencyResolver.resolve(it.token);
+        });
+    }
+
+    private resolveLazyProperties(instance: any): void {
+        const props = LazyPropertiesMetadata.get(instance);
+        props.forEach((it) => {
+            setTimeout(() => {
+                instance[it.name] = it.multi ? this.dependencyResolver.resolveAll(it.token) : this.dependencyResolver.resolve(it.token);
+            }, 0);
+        });
     }
 }

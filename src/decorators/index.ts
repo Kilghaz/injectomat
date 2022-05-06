@@ -1,3 +1,5 @@
 export * from "./inject.decorator"
 export * from "./inject-all.decorator"
+export * from "./inject-lazy.decorator"
+export * from "./inject-all-lazy.decorator"
 export * from "./injectable.decorator"
