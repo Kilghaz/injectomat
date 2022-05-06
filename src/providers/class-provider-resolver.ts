@@ -6,6 +6,8 @@ import { ModuleIdMetaKey } from '../tokens';
 import { getConstructorParametersMetadata } from '../metadata/constructor-parameters-metadata';
 import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing.error';
 import { DependencyResolver } from '../dependency-resolver';
+import { LifetimeMetadata } from '../metadata/injection-metadata';
+import { Lifetime } from '../types/lifetime.type';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
     constructor(private readonly instanceManager: InstanceManager,
@@ -33,6 +35,11 @@ export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
         });
 
         const instance = new constructor(...resolved);
+
+        if (LifetimeMetadata.get(constructor) === Lifetime.Transient) {
+            return instance as T;
+        }
+
         return this.instanceManager.setInstance(identifier, instance) as T;
     }
 
