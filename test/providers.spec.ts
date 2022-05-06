@@ -1,8 +1,7 @@
 import { InjectionContainer } from '../src';
 import { Token } from '../src/types/token';
-import { injectable } from '../src/decorators';
-import { inject } from '../src/decorators';
-import { injectAll } from '../src/decorators';
+import { inject, injectable, injectAll } from '../src/decorators';
+import { Lifetime } from '../src/types/lifetime.type';
 
 describe("Providers", () => {
     let container: InjectionContainer;
@@ -101,6 +100,38 @@ describe("Providers", () => {
         const resolved: FourthTestClass = container.resolve(FourthTestClass);
         expect(resolved).toBeInstanceOf(FourthTestClass);
         expect(resolved.values).toEqual([valueFixture]);
+    });
+
+    it("should create multiple instances for transient dependencies", () => {
+        const constructor = jest.fn();
+
+        @injectable({ lifetime: Lifetime.Transient })
+        class TransientClass {
+            constructor() {
+                constructor();
+            }
+        }
+
+        container.provide(TransientClass);
+        container.resolve(TransientClass);
+        container.resolve(TransientClass);
+        expect(constructor).toHaveBeenCalledTimes(2);
+    });
+
+    it("should create a single instance for singleton dependencies", () => {
+        const constructor = jest.fn();
+
+        @injectable()
+        class SingletonClass {
+            constructor() {
+                constructor();
+            }
+        }
+
+        container.provide(SingletonClass);
+        container.resolve(SingletonClass);
+        container.resolve(SingletonClass);
+        expect(constructor).toHaveBeenCalledTimes(1);
     });
 
 });
