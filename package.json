@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Kilghaz/dinja.git"
+    "url": "git+https://github.com/Kilghaz/injectomat.git"
   },
   "keywords": [
     "dependency",
@@ -25,9 +25,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Kilghaz/dinja/issues"
+    "url": "https://github.com/Kilghaz/injectomat/issues"
   },
-  "homepage": "https://github.com/Kilghaz/dinja#readme",
+  "homepage": "https://github.com/Kilghaz/injectomat#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.182",
