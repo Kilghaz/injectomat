@@ -1,4 +1,4 @@
-import { ProviderResolver } from '../types/provider-resolver.type';
+import { ProviderResolver } from '../types/provider-resolver';
 import { FactoryProvider, isFactoryProvider, Provider } from '../types/provider';
 import { Token } from '../types/token';
 import { DependencyResolver } from '../dependency-resolver';

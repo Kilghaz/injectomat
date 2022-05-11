@@ -1,5 +1,5 @@
 import { Module } from '../module';
-import { Component } from './component.type';
+import { Component } from './component';
 import { Provider } from './provider';
 
 export type ModuleOptions = {

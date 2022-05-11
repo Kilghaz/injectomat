@@ -1,5 +1,5 @@
 import { Module } from './module';
-import { ModuleOptions } from './types/module-options.type';
+import { ModuleOptions } from './types/module-options';
 import { InjectionContainer } from './injection-container';
 import { Token } from './types/token';
 

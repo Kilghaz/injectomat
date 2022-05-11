@@ -1,8 +1,9 @@
 import { Module } from "./module";
-import { Optional } from "./types/optional.type";
-import { Component } from './types/component.type';
+import { Optional } from "./types/optional";
+import { Component } from './types/component';
 import _ from 'lodash';
-import { ComponentIdFactory } from './types/component-id-factory.type';
+import { ComponentIdFactory } from './types/component-id-factory';
+import { UnregisteredComponentError } from './errors/unregistered-component-error';
 
 type ModuleId = string;
 type ParentId = ModuleId;
@@ -40,7 +41,7 @@ export class Context {
         const moduleId = this.components.get(componentId);
 
         if (!moduleId) {
-            throw new Error(`Encountered unregistered component ${componentId}.`);
+            throw new UnregisteredComponentError(componentId);
         }
 
         return moduleId;

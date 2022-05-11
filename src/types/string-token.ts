@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { isClassToken } from './class-token.type';
+import { isClassToken } from './class-token';
 import { TokenMetadata } from '../metadata/injection-metadata';
 import { Token } from './token';
 

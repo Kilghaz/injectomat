@@ -1,15 +1,15 @@
-import { UnregisteredTokenError } from "./errors/unregistered-token.error";
+import { UnregisteredTokenError } from "./errors/unregistered-token-error";
 import { Token } from "./types/token";
 import { Provider, } from "./types/provider";
 import _ from "lodash";
 import { Context } from "./context";
 import { ModuleIdMetaKey } from "./tokens";
-import { Optional } from "./types/optional.type";
+import { Optional } from "./types/optional";
 import { ProviderContainer } from './provider-container';
-import { toStringToken } from './types/string-token.type';
+import { toStringToken } from './types/string-token';
 import { InstanceManager } from './instance-manager';
-import { ProviderSelector } from './types/provider-selector.type';
-import { ProviderResolver } from './types/provider-resolver.type';
+import { ProviderSelector } from './types/provider-selector';
+import { ProviderResolver } from './types/provider-resolver';
 import { FactoryProviderResolver } from './providers/factory-provider-resolver';
 import { ClassProviderResolver } from './providers/class-provider-resolver';
 import { TokenProviderResolver } from './providers/token-provider-resolver';
@@ -42,16 +42,17 @@ const defaultProviderSelector: ProviderSelector = (providers: Provider<unknown>[
 export class DependencyResolver {
 
     private providerSelector: ProviderSelector = defaultProviderSelector;
-    private providerResolvers: ProviderResolver[] = [
-        new FactoryProviderResolver(this),
-        new ClassProviderResolver(this.instanceManager, this),
-        new TokenProviderResolver(this),
-        new ValueProviderResolver(),
-    ];
+    private providerResolvers: ProviderResolver[];
 
     constructor(private readonly instanceManager: InstanceManager,
                 private readonly container: ProviderContainer,
                 private readonly context: Context) {
+        this.providerResolvers =  [
+            new FactoryProviderResolver(this),
+            new ClassProviderResolver(this.instanceManager, this),
+            new TokenProviderResolver(this),
+            new ValueProviderResolver(),
+        ];
     }
 
     setProviderSelector(selector: ProviderSelector): void {

@@ -1,8 +1,8 @@
 import { isLiteralClassProvider, Provider, toClassProvider } from "./types/provider";
 import { v4 as uuid } from "uuid";
 import { ModuleIdMetaKey } from "./tokens";
-import { Component } from './types/component.type';
-import { ModuleOptions } from './types/module-options.type';
+import { Component } from './types/component';
+import { ModuleOptions } from './types/module-options';
 
 export class Module {
     private readonly id = uuid();

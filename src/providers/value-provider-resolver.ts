@@ -1,4 +1,4 @@
-import { ProviderResolver } from '../types/provider-resolver.type';
+import { ProviderResolver } from '../types/provider-resolver';
 import { isValueProvider, Provider, ValueProvider } from '../types/provider';
 
 export class ValueProviderResolver implements ProviderResolver<ValueProvider> {

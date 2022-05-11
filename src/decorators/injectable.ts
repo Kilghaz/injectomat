@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { InjectionScope } from "../types/injection-scope";
 import { LifetimeMetadata, ScopeMetadata, TokenMetadata, TypeMetadata } from "../metadata/injection-metadata";
 import { InjectionType } from "../types/injection-type";
-import { Lifecycle } from '../types/lifecycle.type';
+import { Lifecycle } from '../types/lifecycle';
 
 type ServiceOptions = {
     token: string;

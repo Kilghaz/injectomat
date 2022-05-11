@@ -1,7 +1,7 @@
 import { Token } from './types/token';
 import { Provider } from './types/provider';
-import { Optional } from './types/optional.type';
-import { toStringToken } from './types/string-token.type';
+import { Optional } from './types/optional';
+import { toStringToken } from './types/string-token';
 
 export class ProviderContainer {
     private readonly providers: Map<string, Provider<unknown>[]> = new Map<string, Provider<unknown>[]>();

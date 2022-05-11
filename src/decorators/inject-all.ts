@@ -1,6 +1,6 @@
 import { setConstructorParameterInjectionToken } from "../metadata/constructor-parameters-metadata";
 import { Token } from "../types/token";
-import { toStringToken } from '../types/string-token.type';
+import { toStringToken } from '../types/string-token';
 import { PropertiesMetadata } from '../metadata/injection-metadata';
 
 export function injectAll(token?: Token): any {

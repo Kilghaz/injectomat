@@ -4,7 +4,7 @@ import { Provider } from './types/provider';
 import { ScopeMetadata } from './metadata/injection-metadata';
 import { InjectionScope } from './types/injection-scope';
 import { ModuleIdMetaKey } from './tokens';
-import { Constructor } from './types/constructor.type';
+import { Constructor } from './types/constructor';
 
 
 export class InstanceManager {

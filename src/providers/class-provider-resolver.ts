@@ -1,14 +1,14 @@
-import { ProviderResolver } from '../types/provider-resolver.type';
+import { ProviderResolver } from '../types/provider-resolver';
 import { ClassProvider, isClassProvider, Provider } from '../types/provider';
 import { Token } from '../types/token';
 import { InstanceManager } from '../instance-manager';
 import { ModuleIdMetaKey } from '../tokens';
 import { getConstructorParametersMetadata } from '../metadata/constructor-parameters-metadata';
-import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing.error';
+import { ParameterMetadataMissingError } from '../errors/parameter-metadata-missing-error';
 import { DependencyResolver } from '../dependency-resolver';
 import { LazyPropertiesMetadata, LifetimeMetadata, PropertiesMetadata } from '../metadata/injection-metadata';
-import { Lifecycle } from '../types/lifecycle.type';
-import { Constructor } from '../types/constructor.type';
+import { Lifecycle } from '../types/lifecycle';
+import { Constructor } from '../types/constructor';
 
 export class ClassProviderResolver implements ProviderResolver<ClassProvider> {
     constructor(private readonly instanceManager: InstanceManager,

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "prebuild": "rimraf dist/*",
+    "prebuild": "node pre-build.js",
     "test": "jest",
     "postbuild": "node post-build.js"
   },
@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/Kilghaz/injectomat#readme",
   "devDependencies": {
+    "@types/glob": "^7.2.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.182",
     "@types/node": "^17.0.31",
@@ -39,6 +40,7 @@
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "glob": "^8.0.1",
     "jest": "^27.5.1",
     "prettier": "^2.6.2",
     "react": "^18.1.0",
