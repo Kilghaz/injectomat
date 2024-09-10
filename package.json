@@ -27,6 +27,9 @@
   "bugs": {
     "url": "https://github.com/Kilghaz/injectomat/issues"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "homepage": "https://github.com/Kilghaz/injectomat#readme",
   "devDependencies": {
     "@types/glob": "^7.2.0",

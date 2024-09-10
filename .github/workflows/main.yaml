@@ -23,6 +23,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           always-auth: true
           token: ${{secrets.NPM_TOKEN}}
+      - run: npm set "//registry.npmjs.org/:_authToken=${{secrets.NPM_TOKEN}}"
       - run: npm ci
       - run: npm test
       - run: npm run build
