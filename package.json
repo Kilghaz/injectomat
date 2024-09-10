@@ -1,5 +1,5 @@
 {
-  "name": "injectomat",
+  "name": "@kilghaz/injectomat",
   "version": "1.0.0",
   "description": "A dependency injection library.",
   "main": "index.js",
