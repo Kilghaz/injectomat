@@ -21,10 +21,10 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
-          always-auth: false
+          always-auth: true
           token: ${{secrets.NPM_TOKEN}}
       - run: npm ci
+      - run: echo "${{secrets.NPM_TOKEN}}"
       - run: npm test
       - run: npm run build
-      - run: npm login
       - run: npm publish ./dist --provenance --access public
