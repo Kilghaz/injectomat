@@ -1,6 +1,9 @@
-import { Context, InjectionContainer, Module, RootModule } from '../src';
 import * as React from 'react';
-import { FC } from 'react';
+import {FC} from 'react';
+import {Module} from "@lib/module";
+import {Context} from "@lib/context";
+import {RootModule} from "@lib/root-module";
+import {InjectionContainer} from "@lib/injection-container";
 
 describe("React Component", () => {
     let module: Module;

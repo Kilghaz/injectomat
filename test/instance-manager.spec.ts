@@ -1,5 +1,5 @@
-import { InstanceManager } from '../src';
 import _ from 'lodash';
+import {InstanceManager} from "@lib/instance-manager";
 
 describe("Instance Manager", () => {
     let instanceManager: InstanceManager;
@@ -7,7 +7,9 @@ describe("Instance Manager", () => {
     const keyFixture = "test";
     const decoratorMock = jest.fn().mockImplementation(_.identity);
 
-    class TestClass {}
+    class TestClass {
+    }
+
     const instanceFixture = new TestClass();
 
     it("should decorate instances", () => {

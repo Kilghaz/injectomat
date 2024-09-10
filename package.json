@@ -4,7 +4,7 @@
   "description": "A dependency injection library.",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "prebuild": "node pre-build.js",
     "test": "jest",
     "postbuild": "node post-build.js"

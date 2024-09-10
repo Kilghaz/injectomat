@@ -1,7 +1,7 @@
-import { injectable } from '../src/decorators';
-import { injectLazy } from '../src/decorators';
-import { InjectionContainer } from '../src';
-import { injectAllLazy } from '../src/decorators';
+import {InjectionContainer} from "@lib/injection-container";
+import {injectable} from "@lib/decorators/injectable";
+import {injectLazy} from "@lib/decorators/inject-lazy";
+import {injectAllLazy} from "@lib/decorators/inject-all-lazy";
 
 describe("Lazy", () => {
     let container: InjectionContainer;

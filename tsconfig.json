@@ -20,13 +20,16 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "paths": {
+      "@lib/*": ["./src/*"],
+    }
   },
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules"
-  ]
+  ],
 }

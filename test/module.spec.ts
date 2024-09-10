@@ -1,22 +1,24 @@
-import { Module, RootModule } from '../src';
-import { Token } from '../src/types/token';
-import { injectable } from '../src/decorators';
+import {RootModule} from "@lib/root-module";
+import {Token} from "@lib/types/token";
+import {injectable} from "@lib/decorators/injectable";
+import {Module} from "@lib/module";
 
 describe("Module", () => {
     let module: RootModule;
 
     const tokenFixture: Token = "SomeToken";
     const valueFixture = {
-        hello: { value: "fixture" },
+        hello: {value: "fixture"},
     }
 
     @injectable()
-    class TestClass {}
+    class TestClass {
+    }
 
     beforeEach(() => {
         module = new RootModule({
             providers: [
-                { token: tokenFixture, useValue: valueFixture },
+                {token: tokenFixture, useValue: valueFixture},
                 TestClass,
             ]
         });
@@ -33,7 +35,7 @@ describe("Module", () => {
     it("should import another module", () => {
         const secondModule = new Module({
             providers: [
-                { token: tokenFixture, useValue: valueFixture },
+                {token: tokenFixture, useValue: valueFixture},
                 TestClass,
             ]
         });

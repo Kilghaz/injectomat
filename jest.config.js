@@ -4,6 +4,7 @@ module.exports = {
   moduleFileExtensions: ["js", "json", "ts", "tsx"],
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "^@lib/?(.*)$": "<rootDir>/src/$1",
     "^@tests/(.*)$": "<rootDir>/tests/$1",
   },
   collectCoverageFrom: [

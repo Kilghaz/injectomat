@@ -1,5 +1,7 @@
-import { injectable, inject, injectAll } from '../src/decorators';
-import { InjectionContainer } from '../src';
+import {InjectionContainer} from "@lib/injection-container";
+import {injectable} from "@lib/decorators/injectable";
+import {inject} from "@lib/decorators/inject";
+import {injectAll} from "@lib/decorators/inject-all";
 
 describe("Properties", () => {
     let container: InjectionContainer;

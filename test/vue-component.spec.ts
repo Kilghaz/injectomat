@@ -1,5 +1,7 @@
-import { Context, InjectionContainer, Module } from '../src';
-import { defineComponent } from 'vue';
+import {defineComponent} from 'vue';
+import {Module} from "@lib/module";
+import {InjectionContainer} from "@lib/injection-container";
+import {Context} from "@lib/context";
 
 describe("Vue Component", () => {
     let module: Module;
