@@ -26,5 +26,4 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - run: cp .npmrc dist/.npmrc
       - run: npm publish --provenance
