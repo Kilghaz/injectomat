@@ -17,15 +17,14 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci
-      - run: npm test
-      - run: npm run build
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
+          always-auth: true
+          token: ${{secrets.NPM_TOKEN}}
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
       - run: cp .npmrc dist/.npmrc
       - run: npm publish --provenance
-        working-directory: dist
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
