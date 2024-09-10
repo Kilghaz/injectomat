@@ -4,7 +4,11 @@ const path = require("path");
 const sep = "/";
 
 const clearDist = () => {
-    fs.rmdirSync("dist", { recursive: true });
+    try {
+        fs.rmSync("dist", { recursive: true });
+    } catch (e) {
+        // ignore
+    }
 }
 
 const createIndices = (dir) => {
